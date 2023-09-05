@@ -49,8 +49,5 @@ function calculateTotals(array $transactions): array {
             $totals['expenseTotal'] += $transaction['amount'];
         }
     }
-
-    echo $totals['netTotal'];
-
     return $totals;
 }

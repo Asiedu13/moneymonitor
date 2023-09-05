@@ -21,7 +21,36 @@ function getTransactions(string $fileName): array {
     fgetcsv($file);
     $transactions = [];
     while (($transaction = fgetcsv($file)) !== false) {
-        $transactions[] = $transaction;
+        $transactions[] = parseTransaction($transaction);
     }
     return $transactions;
+}
+
+function parseTransaction(array $transactionRow): array {
+    [$date, $checkNumber, $description, $amount] = $transactionRow;
+    $amount = str_replace(['$', ','], '', $amount );
+    return [
+        'date' => $date,
+        'checkNumber' => $checkNumber,
+        'description' => $description,
+        'amount' => $amount,
+    ];
+}
+
+function calculateTotals(array $transactions): array {
+    $totals = ["netTotal" => 0, 'incomeTotal' => 0, 'expenseTotal' => 0];
+
+    foreach($transactions as $transaction) {
+        $totals['netTotal'] += $transaction['amount'];
+
+        if ($transaction['amount'] > 0) {
+            $totals['incomeTotal'] += $transaction['amount'];
+        }else {
+            $totals['expenseTotal'] += $transaction['amount'];
+        }
+    }
+
+    echo $totals['netTotal'];
+
+    return $totals;
 }
